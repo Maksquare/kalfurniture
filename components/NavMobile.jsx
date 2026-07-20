@@ -150,8 +150,8 @@ const NavMobile = ({ isDarkText = false }) => {
                 <p className="font-secondary text-[10px] font-semibold tracking-[0.25em] uppercase text-gold">
                   Contact Studio
                 </p>
-                <a href="mailto:info@phoenixfurniture.et" className="font-secondary text-[13px] tracking-wide text-white/60 hover:text-white transition-colors duration-300">
-                  info@phoenix.et
+                <a href="mailto:info@sofazonefurniture.et" className="font-secondary text-[13px] tracking-wide text-white/60 hover:text-white transition-colors duration-300">
+                  info@sofazonefurniture.et
                 </a>
                 <a href="tel:+251911123456" className="font-secondary text-[13px] tracking-wide text-white/60 hover:text-white transition-colors duration-300">
                   +251 911 123 456

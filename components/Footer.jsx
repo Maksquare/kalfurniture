@@ -31,8 +31,8 @@ const contactItems = [
   },
   {
     icon: RiMailFill,
-    value: "info@phoenixfurniture.et",
-    href:  "mailto:info@phoenixfurniture.et",
+    value: "info@sofazonefurniture.et",
+    href:  "mailto:info@sofazonefurniture.et",
   },
 ];
 
@@ -230,14 +230,14 @@ const Footer = () => {
           className="py-7 flex flex-col sm:flex-row items-center justify-between gap-4"
         >
           <p className="font-secondary text-[11px] text-white/20 tracking-wide">
-            &copy; {new Date().getFullYear()} Phoenix Furniture. All rights reserved.
+            &copy; {new Date().getFullYear()} Sofazone Furniture. All rights reserved.
           </p>
 
           {/* Decorative center wordmark */}
           <div className="hidden xl:flex items-center gap-3">
             <div className="h-px w-8 bg-white/[0.07]" />
             <span className="font-primary italic text-[13px] text-white/15">
-              Phoenix
+              Sofazone
             </span>
             <div className="h-px w-8 bg-white/[0.07]" />
           </div>

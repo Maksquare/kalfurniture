@@ -41,7 +41,7 @@ const CartDrawer = () => {
 
   const handleCheckout = () => {
     const phoneNumber = "1234567890"; // Placeholder number
-    const intro = "Hello Phoenix Furniture, I would like to order:%0A%0A";
+    const intro = "Hello Sofazone Furniture, I would like to order:%0A%0A";
     const itemsList = cartItems
       .map(
         (item) =>

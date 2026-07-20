@@ -11,12 +11,12 @@ export function ProductProvider({ children }) {
 
   // Initialize from LocalStorage or fallback to data.js
   useEffect(() => {
-    const stored = localStorage.getItem("phoenix_products");
+    const stored = localStorage.getItem("sofazone_products");
     if (stored) {
       setProducts(JSON.parse(stored));
     } else {
       setProducts(initialProducts);
-      localStorage.setItem("phoenix_products", JSON.stringify(initialProducts));
+      localStorage.setItem("sofazone_products", JSON.stringify(initialProducts));
     }
     setIsLoaded(true);
   }, []);
@@ -24,19 +24,19 @@ export function ProductProvider({ children }) {
   const addProduct = (newProduct) => {
     const updated = [newProduct, ...products];
     setProducts(updated);
-    localStorage.setItem("phoenix_products", JSON.stringify(updated));
+    localStorage.setItem("sofazone_products", JSON.stringify(updated));
   };
 
   const updateProduct = (id, updatedData) => {
     const updated = products.map((p) => (p.id === id ? { ...p, ...updatedData } : p));
     setProducts(updated);
-    localStorage.setItem("phoenix_products", JSON.stringify(updated));
+    localStorage.setItem("sofazone_products", JSON.stringify(updated));
   };
 
   const deleteProduct = (id) => {
     const updated = products.filter((p) => p.id !== id);
     setProducts(updated);
-    localStorage.setItem("phoenix_products", JSON.stringify(updated));
+    localStorage.setItem("sofazone_products", JSON.stringify(updated));
   };
 
   return (

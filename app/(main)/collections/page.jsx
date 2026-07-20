@@ -1,7 +1,7 @@
 import ProductGrid from "@/components/ProductGrid";
 
 export const metadata = {
-  title: "Collections | Phoenix Furniture",
+  title: "Collections | Sofazone Furniture",
   description: "Explore our meticulously curated furniture collections.",
 };
 

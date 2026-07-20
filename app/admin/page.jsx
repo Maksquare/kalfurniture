@@ -32,7 +32,7 @@ export default function AdminDashboard() {
           Dashboard <em className="text-gold not-italic font-semibold">Overview</em>
         </h1>
         <p className="font-secondary text-[14px] text-secondary/60">
-          Welcome back to the Phoenix Furniture admin panel.
+          Welcome back to the Sofazone Furniture admin panel.
         </p>
       </header>
 

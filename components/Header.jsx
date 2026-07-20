@@ -42,8 +42,8 @@ const contactDetails = [
   {
     icon: RiMailLine,
     label: "Email",
-    value: "info@phoenixfurniture.et",
-    href: "mailto:info@phoenixfurniture.et",
+    value: "info@sofazonefurniture.et",
+    href: "mailto:info@sofazonefurniture.et",
     note: "We reply within 24 hours",
   },
   {
@@ -196,7 +196,7 @@ const ContactDrawer = ({ onClose }) => {
           </div>
           <div className="flex items-center gap-3 mt-7">
             <div className="h-px flex-1 bg-white/[0.06]" />
-            <span className="font-primary italic text-[13px] text-white/20">Phoenix Furniture</span>
+            <span className="font-primary italic text-[13px] text-white/20">Sofazone Furniture</span>
             <div className="h-px flex-1 bg-white/[0.06]" />
           </div>
           <p className="font-secondary text-[11px] text-white/20 mt-3 tracking-wide">

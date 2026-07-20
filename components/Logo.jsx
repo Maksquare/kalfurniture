@@ -10,11 +10,11 @@ const Logo = ({ isDarkText = false }) => {
       <div 
         className={`w-[140px] h-[45px] transition-colors duration-300 ${isDarkText ? 'bg-secondary group-hover:bg-gold-dark' : 'bg-gold group-hover:bg-gold-light'}`}
         style={{
-          maskImage: 'url(/assets/phoenix-logo.png)',
+          maskImage: 'url(/assets/sofazone-logo.png)',
           maskSize: 'contain',
           maskRepeat: 'no-repeat',
           maskPosition: 'left center',
-          WebkitMaskImage: 'url(/assets/phoenix-logo.png)',
+          WebkitMaskImage: 'url(/assets/sofazone-logo.png)',
           WebkitMaskSize: 'contain',
           WebkitMaskRepeat: 'no-repeat',
           WebkitMaskPosition: 'left center',

@@ -27,14 +27,14 @@ const italiana = Italiana({
 
 export const metadata = {
   title: {
-    default: "Phoenix Furniture | Premium Furniture in Addis Ababa",
-    template: "%s | Phoenix Furniture",
+    default: "Sofazone Furniture | Premium Furniture in Addis Ababa",
+    template: "%s | Sofazone Furniture",
   },
   description:
-    "Experience world-class furniture design at Phoenix Furniture. From modern aesthetics to timeless classics, we deliver elegance to your home.",
+    "Experience world-class furniture design at Sofazone Furniture. From modern aesthetics to timeless classics, we deliver elegance to your home.",
   keywords: [
     "furniture Addis Ababa",
-    "Phoenix Furniture",
+    "Sofazone Furniture",
     "premium furniture",
     "home decor",
     "modern furniture",
@@ -47,12 +47,12 @@ export const metadata = {
   },
   manifest: "/site.webmanifest",
   openGraph: {
-    title: "Phoenix Furniture | Premium Furniture in Addis Ababa",
+    title: "Sofazone Furniture | Premium Furniture in Addis Ababa",
     description:
-      "Experience world-class furniture design at Phoenix Furniture. Elegance, comfort, and style — in every piece.",
+      "Experience world-class furniture design at Sofazone Furniture. Elegance, comfort, and style — in every piece.",
     type: "website",
     locale: "en_ET",
-    siteName: "Phoenix Furniture",
+    siteName: "Sofazone Furniture",
   },
 };
 
