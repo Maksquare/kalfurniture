@@ -14,8 +14,8 @@ export default function AdminProducts() {
   if (!isLoaded) return <div className="p-10 font-secondary text-secondary/60">Loading Products...</div>;
 
   const filteredProducts = products.filter(p => 
-    p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    p.category.toLowerCase().includes(searchQuery.toLowerCase())
+    (p.name || "").toLowerCase().includes(searchQuery.toLowerCase()) || 
+    (p.category || "").toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleAddNew = () => {
@@ -114,7 +114,7 @@ export default function AdminProducts() {
                       </span>
                     </td>
                     <td className="py-4 px-6 font-secondary text-[14px] text-secondary">
-                      {product.price.toLocaleString()} ETB
+                      {(product.price || 0).toLocaleString()} ETB
                     </td>
                     <td className="py-4 px-6">
                       <div className="flex gap-2">
@@ -176,7 +176,7 @@ export default function AdminProducts() {
                     <p className="font-secondary text-[10px] text-secondary/50 uppercase tracking-widest mt-1 bg-secondary/5 inline-block px-2 py-0.5 rounded-full">{product.category}</p>
                   </div>
                   <div className="flex items-center justify-between mt-2">
-                    <span className="font-secondary text-[13px] font-semibold text-secondary">{product.price.toLocaleString()} ETB</span>
+                    <span className="font-secondary text-[13px] font-semibold text-secondary">{(product.price || 0).toLocaleString()} ETB</span>
                     <div className="flex gap-1">
                       <button onClick={() => handleEdit(product)} className="p-2 text-secondary/70 hover:text-gold bg-secondary/5 rounded-lg">
                         <PiPencilSimple size={16} />

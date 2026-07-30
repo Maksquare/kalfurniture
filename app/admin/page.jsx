@@ -19,7 +19,7 @@ export default function AdminDashboard() {
   
   // Calculate average price
   const avgPrice = totalProducts > 0 
-    ? products.reduce((acc, p) => acc + p.price, 0) / totalProducts
+    ? products.reduce((acc, p) => acc + (p.price || 0), 0) / totalProducts
     : 0;
 
   // Count unique categories
@@ -129,7 +129,7 @@ export default function AdminDashboard() {
                       </div>
                     </td>
                     <td className="py-4 px-6 font-secondary text-[14px] text-secondary">
-                      {pkg.price.toLocaleString()} ETB
+                      {(pkg.price || 0).toLocaleString()} ETB
                     </td>
                     <td className="py-4 px-6">
                       <span className="font-secondary text-[12px] bg-secondary/5 px-3 py-1 rounded-full text-secondary/70">
@@ -178,7 +178,7 @@ export default function AdminDashboard() {
                   </div>
                   <div className="flex items-center justify-between mt-2">
                     <div className="flex flex-col">
-                      <span className="font-secondary text-[13px] font-semibold text-secondary">{pkg.price.toLocaleString()} ETB</span>
+                      <span className="font-secondary text-[13px] font-semibold text-secondary">{(pkg.price || 0).toLocaleString()} ETB</span>
                       <span className="font-secondary text-[11px] text-gold font-medium">{pkg.items?.length || 0} items</span>
                     </div>
                     <div className="flex gap-1">

@@ -170,6 +170,25 @@ export default function ContactContent() {
           </div>
 
         </motion.div>
+
+        {/* Map Section */}
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-8 lg:mt-12 w-full max-w-6xl mx-auto h-[350px] md:h-[450px] rounded-2xl overflow-hidden border border-secondary/10 relative z-10"
+        >
+          <iframe 
+            src="https://maps.google.com/maps?q=Edna%20Mall,%20Bole,%20Addis%20Ababa,%20Ethiopia&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+            width="100%" 
+            height="100%" 
+            style={{ border: 0 }} 
+            allowFullScreen="" 
+            loading="lazy" 
+            referrerPolicy="no-referrer-when-downgrade"
+            className="w-full h-full grayscale-[30%] contrast-125 opacity-90 hover:grayscale-0 hover:opacity-100 transition-all duration-700"
+          ></iframe>
+        </motion.div>
       </main>
     </div>
   );

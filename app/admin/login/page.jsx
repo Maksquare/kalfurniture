@@ -13,9 +13,15 @@ export default function LoginPage() {
   async function handleSubmit(formData) {
     setIsLoading(true);
     setError("");
-    const result = await login(formData);
-    if (result?.error) {
-      setError(result.error);
+    try {
+      const result = await login(formData);
+      if (result?.error) {
+        setError(result.error);
+      }
+    } catch (e) {
+      console.error("Login error:", e);
+      setError(e.message || "An unexpected error occurred connecting to the server.");
+    } finally {
       setIsLoading(false);
     }
   }
