@@ -25,26 +25,26 @@ export default {
     extend: {
       colors: {
         // ── Core Brand ──────────────────────────────────────────────
-        primary:    "#191816", // Dark Charcoal
-        muted:      "#2A2825",
+        primary:    "#062335", // Deep Navy
+        muted:      "#0A314A",
 
-        // ── Gold Palette ─────────────────────────────────────────────
-        gold:       "#D9B66E",
+        // ── Gold Palette (Mapped to Rust/Brown for compatibility) ────
+        gold:       "#ddb67d",
         "gold-light": "#E8CC90",
-        "gold-dark":  "#BA964C",
+        "gold-dark":  "#C89F5C",
 
         // ── Neutral / Surface ────────────────────────────────────────
-        porcelain:  "#F4EFEB",
-        cream:      "#EBE4D5",
-        ivory:      "#DCD3C0",
+        porcelain:  "#FFFFFF",
+        cream:      "#FDFBF7",
+        ivory:      "#F7F4EE",
 
         // ── Text ─────────────────────────────────────────────────────
-        secondary:  "#191816",
-        subtle:     "#5E5A53",
+        secondary:  "#062335",
+        subtle:     "#5A6E7D",
 
         // ── UI ───────────────────────────────────────────────────────
-        border:     "#D0C7B2",
-        surface:    "#EBE4D5",
+        border:     "#E5E0D8",
+        surface:    "#FDFBF7",
 
         // ── Functional ───────────────────────────────────────────────
         success:    "#2A7A4B",

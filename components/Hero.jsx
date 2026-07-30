@@ -1,149 +1,91 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import { motion } from "framer-motion";
 import Link from "next/link";
-import { useHeroTheme } from "@/context/HeroThemeContext";
-import { useProducts } from "@/context/ProductContext";
-
-// We define custom themes for the first 4 products to change the aesthetic dynamically
-const heroThemes = [
-  { bg: "#A2AB93", text: "dark", heroText: "#EAE5D9" },  // Green Sofa Theme
-  { bg: "#DAB8B8", text: "dark", heroText: "#F8F1F1" },  // Pink Sofa Theme
-  { bg: "#DFD2C1", text: "dark", heroText: "#FDFBF7" },  // Beige Sofa Theme
-  { bg: "#803535", text: "light", heroText: "#F5E6E6" }, // Red Velvet Sofa Theme
-];
+import { PiArrowRightLight, PiStarFill } from "react-icons/pi";
+import VideoModal from "./VideoModal";
 
 const Hero = () => {
-  const { setHeroTheme } = useHeroTheme();
-  const { products, isLoaded } = useProducts();
-
-  const heroImages = [
-    "/assets/img/hero/green-chair.jpeg",
-    "/assets/img/hero/pink-chair.jpeg",
-    "/assets/img/hero/beige-chair.jpeg",
-    "/assets/img/hero/red-chair.jpeg",
-  ];
-
-  // Combine products with their themes and override images
-  const heroProducts = (isLoaded && products.length >= 4 ? products : []).slice(0, 4).map((p, i) => ({
-    ...p,
-    images: [heroImages[i]],
-    theme: heroThemes[i] || heroThemes[0],
-  }));
-
-  const [activeIndex, setActiveIndex] = useState(0);
-  const activeProduct = heroProducts[activeIndex];
-
-  // Dispatch active theme to Header
-  useEffect(() => {
-    let mounted = true;
-    if (activeProduct) {
-      setTimeout(() => {
-        if (mounted) {
-          setHeroTheme({
-            isActive: true,
-            bgColor: activeProduct.theme.bg,
-            textColor: activeProduct.theme.text,
-          });
-        }
-      }, 0);
-    }
-    return () => {
-      mounted = false;
-      setTimeout(() => {
-        setHeroTheme(prev => ({ ...prev, isActive: false }));
-      }, 0);
-    };
-  }, [activeIndex, activeProduct, setHeroTheme]);
-
-  if (!isLoaded || heroProducts.length === 0) {
-    return <div className="w-full h-screen bg-[#A2AB93]" />;
-  }
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
   return (
-    <section 
-      className="relative w-full min-h-[100svh] flex items-center overflow-hidden pt-28 md:pt-32 pb-10 transition-colors duration-1000 ease-in-out"
-      style={{ backgroundColor: activeProduct.theme.bg }}
-    >
-      
-      {/* Main Center Area */}
-      <div className="container relative z-10 flex flex-col lg:flex-row h-full items-center justify-between">
-        
-        {/* Top/Left / Center Content */}
-        <div className="relative w-full lg:w-[70%] h-[50vh] lg:h-[80vh] flex items-center justify-center mt-6 lg:mt-0">
-          
-          <AnimatePresence mode="wait">
-            {/* Main Floating Image & Text Container */}
-            <motion.div
-              key={`main-img-${activeIndex}`}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.05 }}
-              transition={{ duration: 1.2, ease: "easeInOut" }}
-              className="relative w-full aspect-square flex items-center justify-center pointer-events-none"
-            >
-              {/* The Sofa Image */}
-              <div 
-                className="relative z-10 w-full h-full mix-blend-multiply"
-                style={{
-                  backgroundImage: `url(${activeProduct.images[0]})`,
-                  backgroundSize: 'contain',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'center',
-                }}
-              />
-            </motion.div>
-          </AnimatePresence>
-          
-        </div>
-
-        {/* Bottom/Right Side Cards Column */}
-        <div className="flex flex-row lg:flex-col w-full lg:w-[30%] h-auto lg:h-full justify-start lg:justify-center items-center lg:items-end gap-4 lg:gap-5 xl:gap-6 pt-4 lg:pt-0 pr-0 lg:pr-4 xl:pr-8 z-20 overflow-x-auto lg:overflow-visible pb-6 lg:pb-0 [&::-webkit-scrollbar]:hidden snap-x">
-          <AnimatePresence mode="popLayout">
-            {heroProducts.map((product, idx) => {
-              const isActive = idx === activeIndex;
-              const shortName = product.name.split(" ")[0];
-
-              return (
-                <motion.div 
-                  key={product.id}
-                  layout
-                  onClick={() => setActiveIndex(idx)}
-                  className={`relative shrink-0 w-[110px] h-[130px] lg:w-[130px] lg:h-[150px] xl:w-[150px] xl:h-[170px] bg-[#FAF8F5] rounded-[24px] lg:rounded-[32px] flex flex-col items-center justify-center p-3 lg:p-4 group hover:scale-105 transition-all duration-300 shadow-xl cursor-pointer snap-center ${isActive ? 'ring-2 ring-white/50 ring-offset-4 ring-offset-transparent' : ''}`}
-                >
-                  {/* NEW/ACTIVE Badge */}
-                  <div 
-                    className="absolute top-2 lg:top-3 font-secondary text-[8px] lg:text-[9px] font-bold tracking-[0.1em] px-3 lg:px-4 py-1 rounded-full lowercase z-10 shadow-sm transition-colors duration-500"
-                    style={{
-                      backgroundColor: isActive ? product.theme.bg : '#44423C',
-                      color: isActive ? (product.theme.text === 'dark' ? '#191816' : '#FFFFFF') : '#EFECE5'
-                    }}
-                  >
-                    {isActive ? 'active' : 'new'}
-                  </div>
-
-                  {/* Product Image */}
-                  <div className="w-[80px] h-[65px] lg:w-[100px] xl:w-[120px] lg:h-[80px] xl:h-[95px] rounded-xl overflow-hidden mt-2 lg:mt-4 relative shrink-0">
-                    <img 
-                      src={product.images[0]} 
-                      alt={product.name} 
-                      className="absolute inset-0 w-full h-full object-contain p-2 group-hover:scale-110 transition-transform duration-700 mix-blend-multiply" 
-                    />
-                  </div>
-                </motion.div>
-              );
-            })}
-          </AnimatePresence>
-
-          {/* More options Button */}
-          <Link href="/collections" className="shrink-0 snap-center">
-            <button className="mt-0 lg:mt-6 px-6 lg:px-8 py-3 lg:py-4 bg-[#453E32] hover:bg-[#342e24] text-[#EFECE5] font-secondary text-[12px] lg:text-[14px] rounded-full shadow-lg transition-colors duration-300 whitespace-nowrap">
-              More options
-            </button>
-          </Link>
-        </div>
+    <section className="relative w-full min-h-[100svh] flex items-center overflow-hidden pt-28 pb-10 bg-surface">
+      {/* Decorative Background Curve */}
+      <div className="absolute top-0 right-0 w-1/2 h-full pointer-events-none opacity-30">
+        <svg viewBox="0 0 500 500" className="w-full h-full text-gold" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 400 50 C 600 200, 100 400, 300 500" stroke="currentColor" strokeWidth="1" />
+          <path d="M 350 20 C 700 300, 0 450, 250 550" stroke="currentColor" strokeWidth="0.5" />
+          <circle cx="150" cy="150" r="4" fill="currentColor" />
+          <circle cx="350" cy="400" r="3" fill="currentColor" />
+        </svg>
       </div>
+
+      <div className="container relative z-10 grid lg:grid-cols-2 gap-12 items-center">
+        {/* Left Content */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="flex flex-col items-start pt-10"
+        >
+          <div className="flex items-center gap-2 mb-6">
+            <span className="font-secondary text-[11px] font-bold tracking-[0.2em] uppercase text-secondary">
+              Trending Collections
+            </span>
+            <span className="text-gold text-lg leading-none">+</span>
+          </div>
+
+          <h1 className="font-primary text-[42px] sm:text-[52px] md:text-[64px] lg:text-[72px] font-semibold leading-[1.05] tracking-[-0.02em] text-secondary mb-6">
+            Elevate Your <br />
+            Space <em className="not-italic text-gold">Beautifully.</em>
+          </h1>
+
+          <p className="font-secondary text-[16px] md:text-[18px] text-secondary/70 max-w-[440px] mb-10 leading-relaxed">
+            Discover stylish pieces for your home & kitchen that blend comfort, function & elegance.
+          </p>
+
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6 mb-12">
+            <Link href="/collections">
+              <button className="px-8 py-3.5 bg-primary text-white font-secondary text-[14px] font-medium rounded-full shadow-[0_8px_20px_rgba(155,92,53,0.3)] hover:bg-gold transition-colors hover:shadow-lg hover:-translate-y-0.5">
+                Explore Collection
+              </button>
+            </Link>
+            <Link 
+              href="/packages"
+              className="group flex items-center gap-3 text-secondary hover:text-gold transition-colors"
+            >
+              <div className="w-12 h-12 flex items-center justify-center rounded-full border border-secondary/20 group-hover:border-gold/50 transition-colors bg-white">
+                <PiArrowRightLight size={24} />
+              </div>
+              <span className="font-secondary text-[14px] font-semibold">Explore Packages</span>
+            </Link>
+          </div>
+
+
+        </motion.div>
+
+        {/* Right Image area */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, delay: 0.2 }}
+          className="relative w-full h-[500px] lg:h-[600px] flex items-center justify-center"
+        >
+          <div className="relative w-full h-full max-w-[500px]">
+            {/* The main chair image */}
+            <img 
+              src="/assets/img/hero/beige-chair.jpeg" 
+              alt="Cozy Beige Accent Chair"
+              className="w-full h-full object-contain object-center drop-shadow-2xl mix-blend-multiply"
+            />
+
+
+          </div>
+        </motion.div>
+      </div>
+
+      <VideoModal isOpen={isVideoModalOpen} onClose={() => setIsVideoModalOpen(false)} />
     </section>
   );
 };

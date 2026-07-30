@@ -1,25 +1,23 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 
-const Logo = ({ isDarkText = false }) => {
+const Logo = () => {
   return (
     <Link
       href="/"
-      className="cursor-pointer flex items-center gap-2 select-none group"
+      className="cursor-pointer flex items-center w-fit select-none group"
     >
-      <div 
-        className={`w-[140px] h-[45px] transition-colors duration-300 ${isDarkText ? 'bg-secondary group-hover:bg-gold-dark' : 'bg-gold group-hover:bg-gold-light'}`}
-        style={{
-          maskImage: 'url(/assets/sofazone-logo.png)',
-          maskSize: 'contain',
-          maskRepeat: 'no-repeat',
-          maskPosition: 'left center',
-          WebkitMaskImage: 'url(/assets/sofazone-logo.png)',
-          WebkitMaskSize: 'contain',
-          WebkitMaskRepeat: 'no-repeat',
-          WebkitMaskPosition: 'left center',
-        }}
-      />
+      <div className="relative w-[70px] h-[70px] md:w-[85px] md:h-[85px] flex-shrink-0">
+        <Image 
+          src="/logo.png"
+          alt="Kale Furniture"
+          fill
+          className="object-contain"
+          sizes="(max-width: 768px) 70px, 85px"
+          priority
+        />
+      </div>
     </Link>
   );
 };

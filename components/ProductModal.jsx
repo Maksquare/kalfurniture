@@ -27,16 +27,25 @@ const modalVariants = {
   },
 };
 
+const SWATCHES = [
+  { id: "cream", color: "#F2E3D5", label: "cream" },
+  { id: "grand", color: "#836A58", label: "grand" },
+  { id: "taupe", color: "#948473", label: "taupe" },
+  { id: "mocha", color: "#A47F6A", label: "mocha" },
+  { id: "noir",  color: "#1F1F21", label: "noir" }
+];
+
 const ProductModal = ({ isOpen, onClose, product }) => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [activeSwatch, setActiveSwatch] = useState(SWATCHES[1]);
   const [isAdded, setIsAdded] = useState(false);
   const { addToCart } = useCart();
 
-  // Reset state when a new product is opened
   useEffect(() => {
     if (isOpen) {
       setActiveImageIndex(0);
       setIsAdded(false);
+      setActiveSwatch(SWATCHES[1]);
     }
   }, [isOpen, product]);
 
@@ -44,7 +53,6 @@ const ProductModal = ({ isOpen, onClose, product }) => {
     if (isAdded) return;
     addToCart(product);
     setIsAdded(true);
-    // Automatically reset after 2.5 seconds
     setTimeout(() => setIsAdded(false), 2500);
   };
 
@@ -58,139 +66,170 @@ const ProductModal = ({ isOpen, onClose, product }) => {
           initial="hidden"
           animate="visible"
           exit="exit"
-          className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8 xl:p-12 bg-black/80 backdrop-blur-2xl"
+          className="fixed inset-0 z-[400] flex items-center justify-center p-4 sm:p-6 bg-primary/20 backdrop-blur-md"
           onClick={onClose}
         >
-          {/* Modal Container */}
           <motion.div
             variants={modalVariants}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-6xl h-auto max-h-[95vh] bg-primary/95 backdrop-blur-3xl border border-white/[0.08] rounded-2xl overflow-hidden flex flex-col md:flex-row shadow-2xl"
+            className="relative w-full max-w-[800px] max-h-[95vh] bg-white rounded-[2.5rem] overflow-hidden shadow-2xl flex flex-col"
           >
-            {/* Close Button */}
             <button 
               onClick={onClose}
-              className="absolute top-4 right-4 z-50 group flex items-center justify-center w-10 h-10 rounded-full bg-white/[0.05] border border-white/[0.1] hover:bg-gold hover:border-gold transition-all duration-300 backdrop-blur-md"
+              className="absolute top-6 right-6 z-50 flex items-center justify-center w-10 h-10 rounded-full bg-primary/5 hover:bg-gold hover:text-white transition-colors duration-300 group"
               aria-label="Close modal"
             >
-              <PiXLight className="text-white/70 group-hover:text-primary text-xl transition-colors duration-300" />
+              <PiXLight className="text-secondary/60 group-hover:text-white text-xl transition-colors" />
             </button>
 
-            {/* Left: Image Gallery */}
-            <div className="w-full md:w-[55%] flex flex-col p-6 xl:p-10 bg-white/[0.02] border-r border-white/[0.04]">
-              {/* Main Image */}
-              <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-muted/30 mb-6">
-                <AnimatePresence mode="wait">
-                  <motion.img
-                    key={activeImageIndex}
-                    src={product.images[activeImageIndex]}
-                    alt={`${product.name} - View ${activeImageIndex + 1}`}
-                    initial={{ opacity: 0, scale: 1.05 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.4, ease: "easeInOut" }}
-                    className="absolute inset-0 w-full h-full object-contain p-4"
-                  />
-                </AnimatePresence>
+            {/* Inner Scrollable Container */}
+            <div className="w-full flex-1 overflow-y-auto custom-scrollbar flex flex-col">
+              {/* Top: Swatches */}
+            <div className="flex flex-col items-center mt-12 pt-2">
+              <span className="font-secondary text-[12px] font-medium text-secondary tracking-wide mb-5">
+                available finish
+              </span>
+              <div className="flex items-center gap-3">
+                {SWATCHES.map((swatch) => {
+                  const isActive = activeSwatch.id === swatch.id;
+                  return (
+                    <button
+                      key={swatch.id}
+                      onClick={() => setActiveSwatch(swatch)}
+                      className={`relative w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${isActive ? 'scale-110' : 'hover:scale-110'}`}
+                    >
+                      <div 
+                        className="w-full h-full rounded-full border border-black/10"
+                        style={{ backgroundColor: swatch.color }}
+                      />
+                      {isActive && (
+                        <motion.div 
+                          layoutId="swatch-ring"
+                          className="absolute inset-[-4px] rounded-full border-[1.5px] border-secondary/40"
+                          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        />
+                      )}
+                    </button>
+                  );
+                })}
               </div>
+              <motion.div 
+                key={activeSwatch.id}
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-6 px-8 py-1.5 border border-secondary/20 rounded-full font-secondary text-[12px] text-secondary tracking-wide"
+              >
+                {activeSwatch.label}
+              </motion.div>
+            </div>
 
-              {/* Thumbnail Rail */}
-              <div className="flex items-center gap-3 overflow-x-auto py-1 px-1 [&::-webkit-scrollbar]:hidden snap-x">
-                {product.images.map((img, idx) => (
+            {/* Middle: Product Image */}
+            <div className="relative w-full flex justify-center items-center mt-8 px-10 h-[320px]">
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={activeImageIndex}
+                  src={product.images[activeImageIndex]}
+                  alt={product.name}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.4, ease: "easeInOut" }}
+                  className="w-full h-full object-contain"
+                />
+              </AnimatePresence>
+            </div>
+
+            {/* Specs 4-columns */}
+            <div className="mt-8 px-6 sm:px-12 grid grid-cols-4 gap-4 text-center">
+              <div className="flex flex-col items-center gap-4">
+                <span className="font-secondary text-[11px] text-secondary font-medium tracking-wide">category</span>
+                <span className="font-secondary text-[13px] text-secondary/80">{product.category}</span>
+              </div>
+              <div className="flex flex-col items-center gap-4">
+                <span className="font-secondary text-[11px] text-secondary font-medium tracking-wide">dimensions</span>
+                <span className="font-secondary text-[13px] text-secondary/80 leading-snug whitespace-pre-line">
+                  {product.dimensions || "W:80cm\nD:85cm\nH:97cm"}
+                </span>
+              </div>
+              <div className="flex flex-col items-center gap-4">
+                <span className="font-secondary text-[11px] text-secondary font-medium tracking-wide">structure</span>
+                <span className="font-secondary text-[13px] text-secondary/80 leading-snug whitespace-pre-line">
+                  {product.structure || "Solid ash wood\nhigh-resilience sponge"}
+                </span>
+              </div>
+              <div className="flex flex-col items-center gap-4">
+                <span className="font-secondary text-[11px] text-secondary font-medium tracking-wide">finish</span>
+                <span className="font-secondary text-[13px] text-secondary/80">
+                  {product.finish || "Upholstery fabric"}
+                </span>
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="mt-8 mx-12 h-[1px] bg-secondary/10" />
+
+            {/* Bottom: Pairing Suggestion / Gallery */}
+            <div className="mt-6 flex flex-col items-center pb-8">
+              <span className="font-secondary text-[12px] font-medium text-secondary tracking-wide mb-5">
+                pairing suggestion
+              </span>
+              <div className="flex flex-wrap justify-center gap-4 sm:gap-6 px-8">
+                {product.images.slice(0, 4).map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setActiveImageIndex(idx)}
-                    className={[
-                      "group relative w-20 h-16 xl:w-24 xl:h-20 shrink-0 rounded-md overflow-hidden transition-all duration-300 snap-start",
-                      activeImageIndex === idx 
-                        ? "ring-1 ring-gold ring-offset-2 ring-offset-primary opacity-100" 
-                        : "opacity-40 hover:opacity-100"
-                    ].join(" ")}
+                    className={`w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-[#FAFAFA] flex items-center justify-center p-2 transition-all duration-300 ${activeImageIndex === idx ? 'ring-1 ring-secondary shadow-md scale-105' : 'hover:scale-105 border border-secondary/5'}`}
                   >
-                    <img src={img} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                    {activeImageIndex !== idx && <div className="absolute inset-0 bg-black/40 transition-opacity duration-300 group-hover:opacity-0" />}
+                    <img src={img} alt="" className="w-full h-full object-contain mix-blend-multiply" />
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Right: Product Details */}
-            <div className="w-full md:w-[45%] flex flex-col p-8 xl:p-12 overflow-y-auto custom-scrollbar">
-              <span className="font-secondary text-[10px] font-semibold tracking-[0.2em] uppercase text-gold mb-3">
-                {product.category}
-              </span>
-              
-              <h2 className="font-primary text-[32px] md:text-[40px] font-medium text-white leading-[1.1] mb-4">
-                {product.name}
-              </h2>
-              
-              <div className="font-secondary text-[22px] text-white/90 mb-8">
-                {product.price.toLocaleString()} ETB
+            {/* Sticky Action Footer */}
+            <div className="mt-auto bg-[#FAFAFA] border-t border-secondary/10 p-6 sm:px-12 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-b-[2.5rem]">
+              <div className="text-center sm:text-left">
+                <h3 className="font-primary text-2xl text-secondary">{product.name}</h3>
+                <p className="font-secondary text-gold text-lg mt-1">{product.price.toLocaleString()} ETB</p>
               </div>
               
-              <div className="w-12 h-px bg-gold/50 mb-8" />
-
-              <p className="font-secondary text-[15px] text-white/60 leading-relaxed mb-10">
-                {product.description}
-              </p>
-
-              {/* Features / Details */}
-              <div className="flex flex-col gap-4 mb-12">
-                <div className="flex justify-between border-b border-white/[0.06] pb-3">
-                  <span className="font-secondary text-[13px] text-white/40 uppercase tracking-wider">Materials</span>
-                  <span className="font-secondary text-[13px] text-white/80">{product.materials || "Premium wood & fabric"}</span>
-                </div>
-                <div className="flex justify-between border-b border-white/[0.06] pb-3">
-                  <span className="font-secondary text-[13px] text-white/40 uppercase tracking-wider">Dimensions</span>
-                  <span className="font-secondary text-[13px] text-white/80">{product.dimensions || "W 84\" x D 36\" x H 34\""}</span>
-                </div>
-                <div className="flex justify-between border-b border-white/[0.06] pb-3">
-                  <span className="font-secondary text-[13px] text-white/40 uppercase tracking-wider">Availability</span>
-                  <span className="font-secondary text-[13px] text-emerald-400">In Stock</span>
-                </div>
-              </div>
-
-              {/* Add to Cart Button */}
-              <div className="mt-auto">
-                <button
-                  onClick={handleAddToCart}
-                  disabled={isAdded}
-                  className={[
-                    "relative w-full h-14 flex items-center justify-center gap-3 rounded-full overflow-hidden transition-all duration-300",
-                    isAdded 
-                      ? "bg-emerald-500 text-white cursor-default"
-                      : "bg-gold text-primary border border-gold hover:bg-transparent hover:text-gold hover:shadow-gold-glow"
-                  ].join(" ")}
-                >
-                  <AnimatePresence mode="wait">
-                    {isAdded ? (
-                      <motion.div
-                        key="added"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="flex items-center gap-2 font-secondary text-[12px] font-semibold tracking-[0.15em] uppercase"
-                      >
-                        <PiCheckCircleFill size={18} />
-                        Added to Cart
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="add"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="flex items-center gap-2 font-secondary text-[12px] font-semibold tracking-[0.15em] uppercase"
-                      >
-                        <PiShoppingCartSimpleBold size={16} />
-                        Add to Cart
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </button>
-              </div>
+              <button
+                onClick={handleAddToCart}
+                disabled={isAdded}
+                className={`relative h-12 px-8 flex items-center justify-center gap-2 rounded-full overflow-hidden transition-all duration-300 w-full sm:w-auto ${
+                  isAdded 
+                    ? "bg-emerald-500 text-white" 
+                    : "bg-primary text-white hover:bg-gold hover:shadow-lg"
+                }`}
+              >
+                <AnimatePresence mode="wait">
+                  {isAdded ? (
+                    <motion.div
+                      key="added"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="flex items-center gap-2 font-secondary text-[12px] font-semibold tracking-widest uppercase"
+                    >
+                      <PiCheckCircleFill size={18} />
+                      Added
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="add"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="flex items-center gap-2 font-secondary text-[12px] font-semibold tracking-widest uppercase"
+                    >
+                      <PiShoppingCartSimpleBold size={16} />
+                      Add to Cart
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </button>
             </div>
-
+            </div>
           </motion.div>
         </motion.div>
       )}

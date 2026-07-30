@@ -1,7 +1,9 @@
 import { Cormorant_Garamond, Jost, Italiana } from "next/font/google";
 import "./globals.css";
 import { ProductProvider } from "@/context/ProductContext";
-
+import { PackageProvider } from "@/context/PackageContext";
+import { CartProvider } from "@/context/CartContext";
+import CartDrawer from "@/components/CartDrawer";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -27,14 +29,14 @@ const italiana = Italiana({
 
 export const metadata = {
   title: {
-    default: "Sofazone Furniture | Premium Furniture in Addis Ababa",
-    template: "%s | Sofazone Furniture",
+    default: "Kal Furniture | Premium Furniture in Addis Ababa",
+    template: "%s | Kal Furniture",
   },
   description:
-    "Experience world-class furniture design at Sofazone Furniture. From modern aesthetics to timeless classics, we deliver elegance to your home.",
+    "Experience world-class furniture design at Kal Furniture. From modern aesthetics to timeless classics, we deliver elegance to your home.",
   keywords: [
     "furniture Addis Ababa",
-    "Sofazone Furniture",
+    "Kal Furniture",
     "premium furniture",
     "home decor",
     "modern furniture",
@@ -47,12 +49,12 @@ export const metadata = {
   },
   manifest: "/site.webmanifest",
   openGraph: {
-    title: "Sofazone Furniture | Premium Furniture in Addis Ababa",
+    title: "Kal Furniture | Premium Furniture in Addis Ababa",
     description:
-      "Experience world-class furniture design at Sofazone Furniture. Elegance, comfort, and style — in every piece.",
+      "Experience world-class furniture design at Kal Furniture. Elegance, comfort, and style — in every piece.",
     type: "website",
     locale: "en_ET",
-    siteName: "Sofazone Furniture",
+    siteName: "Kal Furniture",
   },
 };
 
@@ -62,9 +64,14 @@ export default function RootLayout({ children }) {
       <body
         className={`${cormorant.variable} ${jost.variable} ${italiana.variable} antialiased`}
       >
-        <ProductProvider>
-          {children}
-        </ProductProvider>
+        <PackageProvider>
+          <ProductProvider>
+            <CartProvider>
+              {children}
+              <CartDrawer />
+            </CartProvider>
+          </ProductProvider>
+        </PackageProvider>
       </body>
     </html>
   );

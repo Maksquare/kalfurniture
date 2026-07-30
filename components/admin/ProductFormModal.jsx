@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { PiX } from "react-icons/pi";
+import { PiX, PiUploadSimple, PiTrash } from "react-icons/pi";
+import { compressImage } from "@/lib/imageUtils";
 
 export default function ProductFormModal({ isOpen, onClose, onSubmit, initialData }) {
   const [formData, setFormData] = useState({
@@ -13,7 +14,7 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, initialDat
     category: "Living Room",
     type: "Furniture",
     color: "Neutral",
-    images: "",
+    images: [],
     bestSeller: false,
     isNew: false,
     featured: false,
@@ -24,7 +25,7 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, initialDat
       setFormData({
         ...initialData,
         price: initialData.price.toString(),
-        images: initialData.images.join(", "),
+        images: initialData.images || [],
       });
     } else {
       setFormData({
@@ -35,7 +36,7 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, initialDat
         category: "Living Room",
         type: "Furniture",
         color: "Neutral",
-        images: "/assets/img/living-room/living-room-1.jpg",
+        images: [],
         bestSeller: false,
         isNew: false,
         featured: false,
@@ -50,7 +51,7 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, initialDat
     const submitData = {
       ...formData,
       price: Number(formData.price) || 0,
-      images: formData.images.split(",").map(s => s.trim()).filter(Boolean),
+      images: formData.images,
     };
 
     onSubmit(submitData);
@@ -62,6 +63,32 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, initialDat
     setFormData(prev => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value
+    }));
+  };
+
+  const handleImageUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+
+    try {
+      const compressedImages = await Promise.all(
+        files.map(file => compressImage(file))
+      );
+      
+      setFormData(prev => ({
+        ...prev,
+        images: [...prev.images, ...compressedImages]
+      }));
+    } catch (error) {
+      console.error("Error compressing images:", error);
+      alert("Failed to process some images. Please try again.");
+    }
+  };
+
+  const removeImage = (indexToRemove) => {
+    setFormData(prev => ({
+      ...prev,
+      images: prev.images.filter((_, idx) => idx !== indexToRemove)
     }));
   };
 
@@ -159,16 +186,42 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, initialDat
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="font-secondary text-[11px] font-bold tracking-widest uppercase text-secondary/60">Image URLs (comma separated)</label>
-                <input
-                  required
-                  name="images"
-                  value={formData.images}
-                  onChange={handleChange}
-                  className="w-full bg-[#FDFBF7] border border-secondary/20 rounded-xl px-4 py-3 font-secondary text-[14px] focus:outline-none focus:border-gold transition-colors"
-                  placeholder="/assets/img/hero/green-chair.jpeg"
-                />
+              <div className="space-y-4">
+                <label className="font-secondary text-[11px] font-bold tracking-widest uppercase text-secondary/60">Product Images</label>
+                
+                {/* Image Previews */}
+                {formData.images.length > 0 && (
+                  <div className="flex flex-wrap gap-4 mb-4">
+                    {formData.images.map((imgUrl, idx) => (
+                      <div key={idx} className="relative w-24 h-24 rounded-xl border border-secondary/20 overflow-hidden group">
+                        <img src={imgUrl} alt={`Preview ${idx}`} className="w-full h-full object-cover" />
+                        <button
+                          type="button"
+                          onClick={() => removeImage(idx)}
+                          className="absolute inset-0 bg-red-500/20 text-red-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm"
+                        >
+                          <PiTrash size={20} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Upload Button */}
+                <div className="relative">
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                  />
+                  <div className="w-full border-2 border-dashed border-secondary/20 rounded-xl px-4 py-8 flex flex-col items-center justify-center gap-2 bg-[#FDFBF7] text-secondary/50 hover:bg-gold/5 hover:border-gold/30 hover:text-gold transition-colors">
+                    <PiUploadSimple size={24} />
+                    <span className="font-secondary text-[13px] font-medium">Click to upload images</span>
+                    <span className="font-secondary text-[11px]">JPG, PNG, WEBP (Max 5MB total in LocalStorage)</span>
+                  </div>
+                </div>
               </div>
 
               {/* Toggles */}

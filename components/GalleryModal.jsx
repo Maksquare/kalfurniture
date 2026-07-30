@@ -4,9 +4,8 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PiXLight } from "react-icons/pi";
 import ProductModal from "./ProductModal";
+import { useProducts } from "../context/ProductContext";
 import { useCart } from "../context/CartContext";
-
-import { productsData as galleryData } from "@/lib/data";
 
 const overlayVariants = {
   hidden: { opacity: 0 },
@@ -38,6 +37,7 @@ const itemVariants = {
 const GalleryModal = ({ isOpen, onClose, category }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const { addToCart } = useCart();
+  const { products: allProducts } = useProducts();
 
   // Prevent body scroll when either modal is open
   useEffect(() => {
@@ -51,7 +51,7 @@ const GalleryModal = ({ isOpen, onClose, category }) => {
     };
   }, [isOpen, selectedProduct]);
 
-  const products = galleryData[category] || [];
+  const products = allProducts.filter((p) => p.category === category);
 
   return (
     <>

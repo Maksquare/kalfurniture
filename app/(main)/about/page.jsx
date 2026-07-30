@@ -1,7 +1,7 @@
 
 
 export const metadata = {
-  title: "About Us | Sofazone Furniture",
+  title: "About Us | Kal Furniture",
   description: "Learn about our heritage, craftsmanship, and dedication to timeless furniture design.",
 };
 
@@ -14,7 +14,7 @@ const AboutPage = () => {
             A Legacy of <em className="text-gold not-italic font-semibold">Craftsmanship.</em>
           </h1>
           <p className="font-secondary text-[16px] text-secondary/70 leading-relaxed">
-            At Sofazone Furniture, we believe that a home is more than just a physical space—it is a sanctuary. For over two decades, we have dedicated ourselves to designing and crafting furniture that embodies elegance, comfort, and enduring quality.
+            At Kal Furniture, we believe that a home is more than just a physical space—it is a sanctuary. For over two decades, we have dedicated ourselves to designing and crafting furniture that embodies elegance, comfort, and enduring quality.
           </p>
         </div>
 

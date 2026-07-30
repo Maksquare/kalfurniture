@@ -41,18 +41,24 @@ const CartDrawer = () => {
 
   const handleCheckout = () => {
     const phoneNumber = "1234567890"; // Placeholder number
-    const intro = "Hello Sofazone Furniture, I would like to order:%0A%0A";
+    const intro = "Hello Kal Furniture, I would like to order:%0A%0A";
     const itemsList = cartItems
       .map(
         (item) =>
-          `- ${item.quantity}x ${item.name} (${item.price.toLocaleString()} ETB)`
+          `- ${item.quantity}x *${item.name}* (${item.price.toLocaleString()} ETB)`
       )
       .join("%0A");
     
-    const totalLine = `%0A%0ATotal: ${cartTotal.toLocaleString()} ETB`;
+    const totalLine = `%0A%0A*Total: ${cartTotal.toLocaleString()} ETB*`;
     const message = intro + itemsList + totalLine;
 
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
+
+    // Smart Cart Feature: Auto-clear and close after sending order
+    setTimeout(() => {
+      clearCart();
+      setIsCartOpen(false);
+    }, 800);
   };
 
   return (
@@ -63,7 +69,7 @@ const CartDrawer = () => {
           initial="hidden"
           animate="visible"
           exit="exit"
-          className="fixed inset-0 z-[300] bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-[500] bg-primary/20 backdrop-blur-sm"
           onClick={() => setIsCartOpen(false)}
         >
           <motion.div
@@ -72,16 +78,16 @@ const CartDrawer = () => {
             animate="visible"
             exit="exit"
             onClick={(e) => e.stopPropagation()}
-            className="absolute top-0 right-0 h-full w-full sm:w-[450px] bg-[#0a0a0a] border-l border-white/[0.08] shadow-2xl flex flex-col"
+            className="absolute top-0 right-0 h-full w-full sm:w-[450px] bg-cream border-l border-primary/10 shadow-2xl flex flex-col"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-white/[0.08]">
+            <div className="flex items-center justify-between p-6 border-b border-primary/10">
               <div className="flex items-center gap-4">
-                <h2 className="font-primary text-2xl text-white">Your Cart</h2>
+                <h2 className="font-primary text-2xl text-secondary">Your Cart</h2>
                 {cartItems.length > 0 && (
                   <button
                     onClick={clearCart}
-                    className="text-[10px] font-secondary uppercase tracking-widest text-red-400/80 hover:text-red-400 transition-colors"
+                    className="text-[10px] font-secondary uppercase tracking-widest text-red-500/80 hover:text-red-500 transition-colors"
                   >
                     Clear All
                   </button>
@@ -89,9 +95,9 @@ const CartDrawer = () => {
               </div>
               <button
                 onClick={() => setIsCartOpen(false)}
-                className="w-10 h-10 flex items-center justify-center rounded-full bg-white/[0.05] hover:bg-gold transition-colors duration-300 group"
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-primary/5 hover:bg-gold hover:text-white transition-colors duration-300 group"
               >
-                <PiXLight className="text-xl text-white/70 group-hover:text-primary transition-colors" />
+                <PiXLight className="text-xl text-secondary/70 group-hover:text-white transition-colors" />
               </button>
             </div>
 
@@ -99,14 +105,14 @@ const CartDrawer = () => {
             <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
               {cartItems.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center">
-                  <div className="w-16 h-16 rounded-full bg-white/[0.03] flex items-center justify-center mb-4">
-                    <PiWhatsappLogoLight className="text-3xl text-white/20" />
+                  <div className="w-16 h-16 rounded-full bg-primary/5 flex items-center justify-center mb-4">
+                    <PiWhatsappLogoLight className="text-3xl text-secondary/30" />
                   </div>
-                  <h3 className="font-primary text-xl text-white mb-2">Your cart is empty</h3>
-                  <p className="font-secondary text-sm text-white/50 mb-6">Looks like you haven't added any items yet.</p>
+                  <h3 className="font-primary text-xl text-secondary mb-2">Your cart is empty</h3>
+                  <p className="font-secondary text-sm text-secondary/50 mb-6">Looks like you haven't added any items yet.</p>
                   <button
                     onClick={() => setIsCartOpen(false)}
-                    className="px-6 py-3 border border-white/20 text-white/80 font-secondary text-[11px] tracking-widest uppercase hover:bg-white hover:text-primary transition-colors"
+                    className="px-6 py-3 border border-secondary/20 text-secondary/80 font-secondary text-[11px] tracking-widest uppercase hover:bg-secondary hover:text-white transition-colors"
                   >
                     Continue Shopping
                   </button>
@@ -116,17 +122,17 @@ const CartDrawer = () => {
                   {cartItems.map((item) => (
                     <div key={item.id} className="flex gap-4 group">
                       {/* Thumbnail */}
-                      <div className="w-24 h-24 rounded-md overflow-hidden bg-white/[0.02] shrink-0 relative">
-                        <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover" />
+                      <div className="w-24 h-24 rounded-md overflow-hidden bg-white shrink-0 relative border border-primary/5">
+                        <img src={item.images ? item.images[0] : item.image} alt={item.name} className="w-full h-full object-cover" />
                       </div>
                       
                       {/* Info */}
                       <div className="flex flex-col flex-1 py-1">
                         <div className="flex justify-between items-start mb-1">
-                          <h4 className="font-primary text-lg text-white leading-tight">{item.name}</h4>
+                          <h4 className="font-primary text-lg text-secondary leading-tight">{item.name}</h4>
                           <button 
                             onClick={() => removeFromCart(item.id)}
-                            className="text-white/40 hover:text-red-400 transition-colors"
+                            className="text-secondary/40 hover:text-red-500 transition-colors"
                           >
                             <PiTrashLight size={18} />
                           </button>
@@ -135,17 +141,17 @@ const CartDrawer = () => {
                         
                         {/* Quantity Controls */}
                         <div className="mt-auto flex items-center gap-4">
-                          <div className="flex items-center bg-white/[0.05] rounded-full border border-white/[0.1]">
+                          <div className="flex items-center bg-primary/5 rounded-full border border-primary/10">
                             <button 
                               onClick={() => updateQuantity(item.id, -1)}
-                              className="w-8 h-8 flex items-center justify-center text-white/70 hover:text-white"
+                              className="w-8 h-8 flex items-center justify-center text-secondary/70 hover:text-secondary"
                             >
                               <PiMinusLight size={14} />
                             </button>
-                            <span className="w-6 text-center font-secondary text-sm text-white">{item.quantity}</span>
+                            <span className="w-6 text-center font-secondary text-sm text-secondary">{item.quantity}</span>
                             <button 
                               onClick={() => updateQuantity(item.id, 1)}
-                              className="w-8 h-8 flex items-center justify-center text-white/70 hover:text-white"
+                              className="w-8 h-8 flex items-center justify-center text-secondary/70 hover:text-secondary"
                             >
                               <PiPlusLight size={14} />
                             </button>
@@ -160,22 +166,22 @@ const CartDrawer = () => {
 
             {/* Footer */}
             {cartItems.length > 0 && (
-              <div className="p-6 border-t border-white/[0.08] bg-primary/50">
+              <div className="p-6 border-t border-primary/10 bg-ivory">
                 <div className="flex justify-between items-end mb-6">
-                  <span className="font-secondary text-sm text-white/60 tracking-wider uppercase">Subtotal</span>
-                  <span className="font-primary text-3xl text-white">{cartTotal.toLocaleString()} ETB</span>
+                  <span className="font-secondary text-sm text-secondary/60 tracking-wider uppercase">Subtotal</span>
+                  <span className="font-primary text-3xl text-secondary">{cartTotal.toLocaleString()} ETB</span>
                 </div>
                 
                 <button
                   onClick={handleCheckout}
-                  className="w-full h-14 bg-emerald-500 hover:bg-emerald-400 text-white flex items-center justify-center gap-3 transition-colors duration-300 rounded-sm"
+                  className="w-full h-14 bg-emerald-600 hover:bg-emerald-500 text-white flex items-center justify-center gap-3 transition-colors duration-300 rounded-sm"
                 >
                   <PiWhatsappLogoLight size={20} />
                   <span className="font-secondary text-xs font-semibold tracking-widest uppercase">
                     Checkout via WhatsApp
                   </span>
                 </button>
-                <p className="text-center font-secondary text-[11px] text-white/40 mt-4">
+                <p className="text-center font-secondary text-[11px] text-secondary/40 mt-4">
                   Taxes and shipping calculated at checkout.
                 </p>
               </div>

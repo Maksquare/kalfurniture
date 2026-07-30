@@ -1,7 +1,7 @@
-import ProductGrid from "@/components/ProductGrid";
+import CollectionsGrid from "@/components/CollectionsGrid";
 
 export const metadata = {
-  title: "Collections | Sofazone Furniture",
+  title: "Collections | Kal Furniture",
   description: "Explore our meticulously curated furniture collections.",
 };
 
@@ -20,7 +20,7 @@ const CollectionsPage = () => {
       </main>
 
       <div className="-mt-8">
-        <ProductGrid />
+        <CollectionsGrid />
       </div>
     </div>
   );

@@ -28,7 +28,7 @@ const itemVariants = {
 const socials = [
   { icon: RiInstagramLine, label: "Instagram", href: "#" },
   { icon: RiFacebookBoxLine, label: "Facebook", href: "#" },
-  { icon: RiTiktokLine, label: "TikTok", href: "#" },
+  { icon: RiTiktokLine, label: "TikTok", href: "https://www.tiktok.com/@kale11114" },
   { icon: RiLinkedinLine, label: "LinkedIn", href: "#" },
 ];
 
@@ -114,7 +114,7 @@ export default function ContactContent() {
                 </div>
                 <div>
                   <h3 className="font-primary text-[22px] text-secondary mb-2">Email</h3>
-                  <a href="mailto:info@sofazonefurniture.et" className="block font-secondary text-[16px] text-secondary/80 hover:text-gold transition-colors">info@sofazonefurniture.et</a>
+                  <a href="mailto:info@kalfurniture.et" className="block font-secondary text-[16px] text-secondary/80 hover:text-gold transition-colors">info@kalfurniture.et</a>
                 </div>
               </div>
             </motion.div>

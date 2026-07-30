@@ -17,8 +17,8 @@ export default function AdminLayout({ children }) {
     <div className="min-h-screen bg-[#FDFBF7] flex">
       {/* Sidebar */}
       <aside className="w-64 bg-primary text-white flex flex-col fixed inset-y-0 left-0 z-20">
-        <div className="p-6 border-b border-white/10 flex items-center justify-center">
-          <div className="scale-90">
+        <div className="pt-8 pb-6 px-10 border-b border-white/10 flex items-center justify-start">
+          <div className="scale-90 origin-left">
             <Logo isDarkText={false} />
           </div>
         </div>

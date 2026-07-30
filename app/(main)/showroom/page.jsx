@@ -26,7 +26,7 @@ export default function ShowroomPage() {
             <span className="text-gold italic font-light">Showroom</span>
           </h1>
           <p className="font-secondary text-[16px] md:text-[18px] text-secondary/70 leading-relaxed max-w-2xl">
-            Immerse yourself in our meticulously curated spaces. From grand living rooms to serene bedroom sanctuaries, discover the craftsmanship and quality of Sofazone Furniture in person.
+            Immerse yourself in our meticulously curated spaces. From grand living rooms to serene bedroom sanctuaries, discover the craftsmanship and quality of Kal Furniture in person.
           </p>
         </motion.div>
       </section>

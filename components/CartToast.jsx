@@ -25,7 +25,7 @@ const CartToast = () => {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 50, scale: 0.9 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed bottom-28 right-6 z-[400] flex items-center gap-4 bg-gold text-primary border border-gold/30 rounded-full shadow-[0_10px_40px_rgba(201,168,76,0.35)] px-6 py-4 hover:scale-105 hover:bg-gold-light transition-all duration-300 group cursor-pointer"
+          className="fixed bottom-28 right-6 z-[500] flex items-center gap-4 bg-gold text-primary border border-gold/30 rounded-full shadow-[0_10px_40px_rgba(201,168,76,0.35)] px-6 py-4 hover:scale-105 hover:bg-gold-light transition-all duration-300 group cursor-pointer"
         >
           <div className="relative">
             <PiShoppingCartSimpleBold size={24} />
