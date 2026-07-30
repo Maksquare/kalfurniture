@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PiXLight, PiTrashLight, PiMinusLight, PiPlusLight, PiWhatsappLogoLight } from "react-icons/pi";
 import { useCart } from "../context/CartContext";
+import { incrementSalesCount } from "@/app/actions/checkout";
 
 const overlayVariants = {
   hidden: { opacity: 0 },
@@ -39,7 +40,7 @@ const CartDrawer = () => {
     };
   }, [isCartOpen]);
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     const phoneNumber = "1234567890"; // Placeholder number
     const intro = "Hello Kal Furniture, I would like to order:%0A%0A";
     const itemsList = cartItems
@@ -53,6 +54,9 @@ const CartDrawer = () => {
     const message = intro + itemsList + totalLine;
 
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
+
+    // Track sales in database silently
+    incrementSalesCount(cartItems);
 
     // Smart Cart Feature: Auto-clear and close after sending order
     setTimeout(() => {

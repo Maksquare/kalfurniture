@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
-import { PiShoppingCartLight, PiStarFill, PiArrowLeftLight, PiArrowRightLight } from "react-icons/pi";
+import { PiShoppingCartLight, PiStarFill, PiStarLight, PiArrowLeftLight, PiArrowRightLight } from "react-icons/pi";
 import { useProducts } from "@/context/ProductContext";
 import { useCart } from "@/context/CartContext";
 import ProductModal from "./ProductModal";
@@ -122,11 +122,20 @@ const ProductGrid = ({ title = "Trending Finds", subtitle = "Handpicked furnitur
                     </h3>
                     
                     {/* Rating Stars */}
-                    <div className="flex gap-1 text-gold mb-4">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <PiStarFill key={star} size={10} />
-                      ))}
-                    </div>
+                    {product.sales_count >= 5 ? (
+                      <div className="flex gap-1 text-gold mb-4">
+                        {[1, 2, 3, 4, 5].map((star) => {
+                          const isFilled = product.sales_count >= 10 ? true : star <= 4;
+                          return isFilled ? (
+                            <PiStarFill key={star} size={10} />
+                          ) : (
+                            <PiStarLight key={star} size={10} />
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="mb-4 h-[10px]" /> /* spacer to maintain layout */
+                    )}
                   </div>
 
                   <div className="flex items-center justify-between">

@@ -2,6 +2,8 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import { serverAddPackage, serverUpdatePackage, serverDeletePackage } from "@/app/actions/admin";
+import toast from "react-hot-toast";
 
 const initialPackages = [
   {
@@ -107,10 +109,14 @@ export function PackageProvider({ children }) {
     }
 
     try {
-      const { error } = await supabase.from('packages').insert([packageWithId]);
-      if (error) throw error;
+      const result = await serverAddPackage(packageWithId);
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+      toast.success("Package added successfully");
     } catch (error) {
-      console.error("Error adding package:", error.message);
+      console.error("Error adding package via server action:", error.message);
+      toast.error(error.message || "Failed to add package");
       // Revert optimistic update
       setPackages((prev) => prev.filter(p => p.id !== tempId));
     }
@@ -127,10 +133,14 @@ export function PackageProvider({ children }) {
     }
 
     try {
-      const { error } = await supabase.from('packages').update(updatedData).eq('id', id);
-      if (error) throw error;
+      const result = await serverUpdatePackage(id, updatedData);
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+      toast.success("Package updated successfully");
     } catch (error) {
-      console.error("Error updating package:", error.message);
+      console.error("Error updating package via server action:", error.message);
+      toast.error(error.message || "Failed to update package");
       // Reload to fix state
       const { data } = await supabase.from('packages').select('*');
       if (data) setPackages(data);
@@ -149,10 +159,15 @@ export function PackageProvider({ children }) {
     }
 
     try {
-      const { error } = await supabase.from('packages').delete().eq('id', id);
-      if (error) throw error;
+      const result = await serverDeletePackage(id);
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+      toast.success("Package deleted successfully");
     } catch (error) {
-      console.error("Error deleting package:", error.message);
+      console.error("Error deleting package via server action:", error.message);
+      toast.error(error.message || "Failed to delete package");
+      // Revert on error
       setPackages(previous);
     }
   };

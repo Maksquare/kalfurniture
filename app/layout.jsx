@@ -4,6 +4,7 @@ import { ProductProvider } from "@/context/ProductContext";
 import { PackageProvider } from "@/context/PackageContext";
 import { CartProvider } from "@/context/CartContext";
 import CartDrawer from "@/components/CartDrawer";
+import { Toaster } from "react-hot-toast";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -69,6 +70,7 @@ export default function RootLayout({ children }) {
             <CartProvider>
               {children}
               <CartDrawer />
+              <Toaster position="bottom-right" toastOptions={{ className: 'font-secondary text-[14px]' }} />
             </CartProvider>
           </ProductProvider>
         </PackageProvider>

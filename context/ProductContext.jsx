@@ -3,6 +3,8 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { allProducts as initialProducts } from "@/lib/data";
+import { serverAddProduct, serverUpdateProduct, serverDeleteProduct } from "@/app/actions/admin";
+import toast from "react-hot-toast";
 
 const ProductContext = createContext();
 
@@ -53,10 +55,7 @@ export function ProductProvider({ children }) {
       ));
       
       if (supabase) {
-        await supabase
-          .from('products')
-          .update({ featured: false })
-          .eq('category', productWithId.category);
+        // Optimistic state was updated above. The server action handles the DB side.
       }
     }
 
@@ -73,10 +72,14 @@ export function ProductProvider({ children }) {
     }
 
     try {
-      const { error } = await supabase.from('products').insert([productWithId]);
-      if (error) throw error;
+      const result = await serverAddProduct(productWithId);
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+      toast.success("Product added successfully");
     } catch (error) {
-      console.error("Error adding product:", error.message);
+      console.error("Error adding product via server action:", error.message);
+      toast.error(error.message || "Failed to add product");
       // Revert optimistic update on error by reloading from DB
       const { data } = await supabase.from('products').select('*');
       if (data) setProducts(data);
@@ -92,14 +95,6 @@ export function ProductProvider({ children }) {
       setProducts((prev) => prev.map(p => 
         (p.category === category && p.id !== id) ? { ...p, featured: false } : p
       ));
-
-      if (supabase) {
-        await supabase
-          .from('products')
-          .update({ featured: false })
-          .eq('category', category)
-          .neq('id', id);
-      }
     }
 
     // Optimistic update for the targeted product
@@ -120,10 +115,14 @@ export function ProductProvider({ children }) {
     }
 
     try {
-      const { error } = await supabase.from('products').update(updatedData).eq('id', id);
-      if (error) throw error;
+      const result = await serverUpdateProduct(id, updatedData);
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+      toast.success("Product updated successfully");
     } catch (error) {
-      console.error("Error updating product:", error.message);
+      console.error("Error updating product via server action:", error.message);
+      toast.error(error.message || "Failed to update product");
       // Reload from DB to fix state if update failed
       const { data } = await supabase.from('products').select('*');
       if (data) setProducts(data);
@@ -143,10 +142,14 @@ export function ProductProvider({ children }) {
     }
 
     try {
-      const { error } = await supabase.from('products').delete().eq('id', id);
-      if (error) throw error;
+      const result = await serverDeleteProduct(id);
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+      toast.success("Product deleted successfully");
     } catch (error) {
-      console.error("Error deleting product:", error.message);
+      console.error("Error deleting product via server action:", error.message);
+      toast.error(error.message || "Failed to delete product");
       // Revert on error
       setProducts(previousProducts);
     }
