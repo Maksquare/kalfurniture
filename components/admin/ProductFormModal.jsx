@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { PiX, PiUploadSimple, PiTrash } from "react-icons/pi";
-import { compressImage } from "@/lib/imageUtils";
+import { PiX, PiUploadSimple, PiTrash, PiSpinnerGap } from "react-icons/pi";
+import { uploadImageToStorage } from "@/lib/storageUtils";
 
 export default function ProductFormModal({ isOpen, onClose, onSubmit, initialData }) {
   const [formData, setFormData] = useState({
@@ -14,11 +14,15 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, initialDat
     category: "Living Room",
     type: "Furniture",
     color: "Neutral",
+    dimensions: "",
+    structure: "",
+    finish: "",
     images: [],
     bestSeller: false,
     isNew: false,
     featured: false,
   });
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     if (initialData) {
@@ -36,6 +40,9 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, initialDat
         category: "Living Room",
         type: "Furniture",
         color: "Neutral",
+        dimensions: "",
+        structure: "",
+        finish: "",
         images: [],
         bestSeller: false,
         isNew: false,
@@ -70,18 +77,22 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, initialDat
     const files = Array.from(e.target.files);
     if (!files.length) return;
 
+    setIsUploading(true);
     try {
-      const compressedImages = await Promise.all(
-        files.map(file => compressImage(file))
+      // Upload directly to Supabase Storage
+      const uploadedUrls = await Promise.all(
+        files.map(file => uploadImageToStorage(file))
       );
       
       setFormData(prev => ({
         ...prev,
-        images: [...prev.images, ...compressedImages]
+        images: [...prev.images, ...uploadedUrls]
       }));
     } catch (error) {
-      console.error("Error compressing images:", error);
-      alert("Failed to process some images. Please try again.");
+      console.error("Error uploading images:", error);
+      alert("Failed to upload some images. Please check your connection and try again.");
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -176,14 +187,48 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, initialDat
               <div className="space-y-2">
                 <label className="font-secondary text-[11px] font-bold tracking-widest uppercase text-secondary/60">Description</label>
                 <textarea
-                  required
                   name="description"
                   value={formData.description}
                   onChange={handleChange}
                   rows={3}
                   className="w-full bg-[#FDFBF7] border border-secondary/20 rounded-xl px-4 py-3 font-secondary text-[14px] focus:outline-none focus:border-gold transition-colors resize-none"
-                  placeholder="Product description..."
+                  placeholder="Product description (Supports Amharic)..."
                 />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-2">
+                  <label className="font-secondary text-[11px] font-bold tracking-widest uppercase text-secondary/60">Dimensions</label>
+                  <input
+                    name="dimensions"
+                    value={formData.dimensions}
+                    onChange={handleChange}
+                    className="w-full bg-[#FDFBF7] border border-secondary/20 rounded-xl px-4 py-3 font-secondary text-[14px] focus:outline-none focus:border-gold transition-colors"
+                    placeholder="e.g. W:80cm D:85cm H:97cm"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <label className="font-secondary text-[11px] font-bold tracking-widest uppercase text-secondary/60">Structure</label>
+                  <input
+                    name="structure"
+                    value={formData.structure}
+                    onChange={handleChange}
+                    className="w-full bg-[#FDFBF7] border border-secondary/20 rounded-xl px-4 py-3 font-secondary text-[14px] focus:outline-none focus:border-gold transition-colors"
+                    placeholder="e.g. Solid ash wood"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="font-secondary text-[11px] font-bold tracking-widest uppercase text-secondary/60">Finish</label>
+                  <input
+                    name="finish"
+                    value={formData.finish}
+                    onChange={handleChange}
+                    className="w-full bg-[#FDFBF7] border border-secondary/20 rounded-xl px-4 py-3 font-secondary text-[14px] focus:outline-none focus:border-gold transition-colors"
+                    placeholder="e.g. Upholstery fabric"
+                  />
+                </div>
               </div>
 
               <div className="space-y-4">
@@ -219,8 +264,15 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, initialDat
                   <div className="w-full border-2 border-dashed border-secondary/20 rounded-xl px-4 py-8 flex flex-col items-center justify-center gap-2 bg-[#FDFBF7] text-secondary/50 hover:bg-gold/5 hover:border-gold/30 hover:text-gold transition-colors">
                     <PiUploadSimple size={24} />
                     <span className="font-secondary text-[13px] font-medium">Click to upload images</span>
-                    <span className="font-secondary text-[11px]">JPG, PNG, WEBP (Max 5MB total in LocalStorage)</span>
+                    <span className="font-secondary text-[11px]">JPG, PNG, WEBP, HEIC (Auto-uploads to Cloud)</span>
                   </div>
+                  
+                  {isUploading && (
+                    <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-20 flex flex-col items-center justify-center rounded-xl border border-secondary/20">
+                      <PiSpinnerGap size={24} className="animate-spin text-gold mb-2" />
+                      <span className="font-secondary text-[11px] font-bold tracking-widest uppercase text-secondary">Uploading...</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -269,9 +321,10 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, initialDat
             <button
               type="submit"
               form="product-form"
-              className="px-6 py-2.5 rounded-full font-secondary text-[11px] font-bold tracking-widest uppercase bg-gold text-primary shadow-[0_4px_20px_rgba(217,182,110,0.3)] hover:shadow-[0_6px_25px_rgba(217,182,110,0.4)] transition-all"
+              disabled={isUploading}
+              className="px-6 py-2.5 rounded-full font-secondary text-[11px] font-bold tracking-widest uppercase bg-gold text-primary shadow-[0_4px_20px_rgba(217,182,110,0.3)] hover:shadow-[0_6px_25px_rgba(217,182,110,0.4)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Save Product
+              {isUploading ? "Uploading..." : "Save Product"}
             </button>
           </div>
         </motion.div>

@@ -14,9 +14,9 @@ export default {
       xl: "1200px",
     },
     fontFamily: {
-      primary: ["var(--font-cormorant)"],    // Elegant serif for headings
-      secondary: ["var(--font-jost)"],        // Clean geometric sans for body
-      accent: ["var(--font-italiana)"],       // Decorative for special labels
+      primary: ["var(--font-cormorant)", "serif"],
+      secondary: ["var(--font-jost)", "var(--font-noto-ethiopic)", "sans-serif"],
+      accent: ["var(--font-italiana)", "serif"],
     },
     container: {
       center: true,

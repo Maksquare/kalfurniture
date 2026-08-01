@@ -139,6 +139,15 @@ const ProductModal = ({ isOpen, onClose, product }) => {
               </AnimatePresence>
             </div>
 
+            {/* Description Section */}
+            {product.description && (
+              <div className="mt-8 px-8 sm:px-16 text-center">
+                <p className="font-secondary text-[15px] leading-relaxed text-secondary/80 max-w-[600px] mx-auto whitespace-pre-wrap">
+                  {product.description}
+                </p>
+              </div>
+            )}
+
             {/* Specs 4-columns */}
             <div className="mt-8 px-6 sm:px-12 grid grid-cols-4 gap-4 text-center">
               <div className="flex flex-col items-center gap-4">
@@ -148,19 +157,19 @@ const ProductModal = ({ isOpen, onClose, product }) => {
               <div className="flex flex-col items-center gap-4">
                 <span className="font-secondary text-[11px] text-secondary font-medium tracking-wide">dimensions</span>
                 <span className="font-secondary text-[13px] text-secondary/80 leading-snug whitespace-pre-line">
-                  {product.dimensions || "W:80cm\nD:85cm\nH:97cm"}
+                  {product.dimensions || "Not specified"}
                 </span>
               </div>
               <div className="flex flex-col items-center gap-4">
                 <span className="font-secondary text-[11px] text-secondary font-medium tracking-wide">structure</span>
                 <span className="font-secondary text-[13px] text-secondary/80 leading-snug whitespace-pre-line">
-                  {product.structure || "Solid ash wood\nhigh-resilience sponge"}
+                  {product.structure || "Not specified"}
                 </span>
               </div>
               <div className="flex flex-col items-center gap-4">
                 <span className="font-secondary text-[11px] text-secondary font-medium tracking-wide">finish</span>
                 <span className="font-secondary text-[13px] text-secondary/80">
-                  {product.finish || "Upholstery fabric"}
+                  {product.finish || "Not specified"}
                 </span>
               </div>
             </div>

@@ -1,4 +1,4 @@
-import { Cormorant_Garamond, Jost, Italiana } from "next/font/google";
+import { Cormorant_Garamond, Jost, Italiana, Noto_Sans_Ethiopic } from "next/font/google";
 import "./globals.css";
 import { ProductProvider } from "@/context/ProductContext";
 import { PackageProvider } from "@/context/PackageContext";
@@ -25,6 +25,13 @@ const italiana = Italiana({
   subsets: ["latin"],
   variable: "--font-italiana",
   weight: ["400"],
+  display: "swap",
+});
+
+const notoSansEthiopic = Noto_Sans_Ethiopic({
+  subsets: ["ethiopic"],
+  variable: "--font-noto-ethiopic",
+  weight: ["300", "400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -63,7 +70,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${cormorant.variable} ${jost.variable} ${italiana.variable} antialiased`}
+        className={`${cormorant.variable} ${jost.variable} ${italiana.variable} ${notoSansEthiopic.variable} antialiased`}
       >
         <PackageProvider>
           <ProductProvider>

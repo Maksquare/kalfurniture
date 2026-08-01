@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { PiX, PiUploadSimple, PiTrash, PiPlus } from "react-icons/pi";
-import { compressImage } from "@/lib/imageUtils";
+import { PiX, PiUploadSimple, PiTrash, PiPlus, PiSpinnerGap } from "react-icons/pi";
+import { uploadImageToStorage } from "@/lib/storageUtils";
 
 export default function PackageFormModal({ isOpen, onClose, onSubmit, initialData }) {
   const [formData, setFormData] = useState({
@@ -17,6 +17,7 @@ export default function PackageFormModal({ isOpen, onClose, onSubmit, initialDat
     price: "",
     items: []
   });
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     if (initialData) {
@@ -61,26 +62,34 @@ export default function PackageFormModal({ isOpen, onClose, onSubmit, initialDat
   const handleMainImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    
+    setIsUploading(true);
     try {
-      const compressedImage = await compressImage(file);
-      setFormData(prev => ({ ...prev, mainImage: compressedImage }));
+      const url = await uploadImageToStorage(file);
+      setFormData(prev => ({ ...prev, mainImage: url }));
     } catch (error) {
-      console.error("Error compressing image:", error);
-      alert("Failed to process image.");
+      console.error("Upload error:", error);
+      alert("Failed to upload image. Please try again.");
+    } finally {
+      setIsUploading(false);
     }
   };
 
-  const handleItemImageUpload = async (e, itemIndex) => {
+  const handleItemImageUpload = async (index, e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    setIsUploading(true);
     try {
-      const compressedImage = await compressImage(file);
+      const url = await uploadImageToStorage(file);
       const newItems = [...formData.items];
-      newItems[itemIndex].image = compressedImage;
+      newItems[index].image = url;
       setFormData(prev => ({ ...prev, items: newItems }));
     } catch (error) {
-      console.error("Error compressing image:", error);
-      alert("Failed to process image.");
+      console.error("Upload error:", error);
+      alert("Failed to upload item image.");
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -178,25 +187,43 @@ export default function PackageFormModal({ isOpen, onClose, onSubmit, initialDat
 
               <div className="space-y-2">
                 <label className="font-secondary text-[11px] font-bold tracking-widest uppercase text-secondary/60">Description</label>
-                <textarea required name="description" value={formData.description} onChange={handleChange} rows={2} className="w-full bg-[#FDFBF7] border border-secondary/20 rounded-xl px-4 py-3 font-secondary text-[14px] focus:outline-none focus:border-gold transition-colors resize-none" placeholder="Package description..." />
+                <textarea required name="description" value={formData.description} onChange={handleChange} rows={2} className="w-full bg-[#FDFBF7] border border-secondary/20 rounded-xl px-4 py-3 font-secondary text-[14px] focus:outline-none focus:border-gold transition-colors resize-none" placeholder="Package description (Supports Amharic)..." />
               </div>
 
               <div className="space-y-4">
                 <label className="font-secondary text-[11px] font-bold tracking-widest uppercase text-secondary/60">Main Package Image</label>
-                <div className="flex items-center gap-4">
-                  {formData.mainImage && (
-                    <div className="w-32 h-32 rounded-xl border border-secondary/20 overflow-hidden relative group">
-                      <img src={formData.mainImage} alt="Main Preview" className="w-full h-full object-cover" />
-                    </div>
-                  )}
-                  <div className="relative flex-1">
-                    <input type="file" accept="image/*" onChange={handleMainImageUpload} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
-                    <div className="w-full border-2 border-dashed border-secondary/20 rounded-xl px-4 py-6 flex flex-col items-center justify-center gap-2 bg-[#FDFBF7] text-secondary/50 hover:bg-gold/5 hover:border-gold/30 hover:text-gold transition-colors">
-                      <PiUploadSimple size={24} />
-                      <span className="font-secondary text-[13px] font-medium">Upload Main Image</span>
-                    </div>
+                {formData.mainImage ? (
+                  <div className="relative w-full h-48 rounded-xl overflow-hidden border border-secondary/20 group">
+                    <img src={formData.mainImage} alt="Main" className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, mainImage: "" }))}
+                      className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 backdrop-blur text-red-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
+                    >
+                      <PiTrash size={16} />
+                    </button>
                   </div>
-                </div>
+                ) : (
+                  <div className="relative w-full h-48">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleMainImageUpload}
+                      disabled={isUploading}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 disabled:cursor-not-allowed"
+                    />
+                    <div className="w-full h-full border-2 border-dashed border-secondary/20 rounded-xl flex flex-col items-center justify-center gap-2 bg-[#FDFBF7] text-secondary/50 hover:bg-gold/5 hover:border-gold/30 hover:text-gold transition-colors">
+                      <PiUploadSimple size={32} />
+                      <span className="font-secondary text-[13px] font-medium">Upload Hero Image</span>
+                      <span className="font-secondary text-[11px]">JPG, PNG, WEBP, HEIC (Auto-uploads to Cloud)</span>
+                    </div>
+                    {isUploading && (
+                      <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-20 flex flex-col items-center justify-center rounded-xl border border-secondary/20">
+                        <PiSpinnerGap size={24} className="animate-spin text-gold mb-2" />
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="space-y-4 pt-6 border-t border-secondary/10">
@@ -230,12 +257,22 @@ export default function PackageFormModal({ isOpen, onClose, onSubmit, initialDat
                             <img src={item.image} alt="Item" className="w-full h-full object-cover" />
                           </div>
                         )}
-                        <div className="relative flex-1">
-                          <input type="file" accept="image/*" onChange={(e) => handleItemImageUpload(e, idx)} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
-                          <div className="w-full border border-dashed border-secondary/20 rounded-lg px-4 py-3 flex items-center justify-center gap-2 bg-white text-secondary/50 hover:bg-gold/5 hover:text-gold transition-colors">
-                            <PiUploadSimple size={18} />
-                            <span className="font-secondary text-[11px]">Upload Item Image</span>
+                        <div className="relative w-24 h-24 shrink-0">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            disabled={isUploading}
+                            onChange={(e) => handleItemImageUpload(idx, e)}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 disabled:cursor-not-allowed"
+                          />
+                          <div className="w-full h-full border-2 border-dashed border-secondary/20 rounded-xl flex items-center justify-center bg-[#FDFBF7] text-secondary/40 hover:bg-gold/5 hover:border-gold hover:text-gold transition-colors">
+                            <PiUploadSimple size={24} />
                           </div>
+                          {isUploading && (
+                            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-20 flex items-center justify-center rounded-xl">
+                              <PiSpinnerGap size={20} className="animate-spin text-gold" />
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -254,8 +291,13 @@ export default function PackageFormModal({ isOpen, onClose, onSubmit, initialDat
             <button type="button" onClick={onClose} className="px-6 py-2.5 rounded-full font-secondary text-[11px] font-bold tracking-widest uppercase border border-secondary/20 text-secondary/60 hover:text-secondary hover:border-secondary transition-all">
               Cancel
             </button>
-            <button type="submit" form="package-form" className="px-6 py-2.5 rounded-full font-secondary text-[11px] font-bold tracking-widest uppercase bg-gold text-primary shadow-[0_4px_20px_rgba(217,182,110,0.3)] hover:shadow-[0_6px_25px_rgba(217,182,110,0.4)] transition-all">
-              Save Package
+            <button
+              type="submit"
+              form="package-form"
+              disabled={isUploading}
+              className="px-6 py-2.5 rounded-full font-secondary text-[11px] font-bold tracking-widest uppercase bg-gold text-primary shadow-[0_4px_20px_rgba(217,182,110,0.3)] hover:shadow-[0_6px_25px_rgba(217,182,110,0.4)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isUploading ? "Uploading..." : "Save Package"}
             </button>
           </div>
         </motion.div>

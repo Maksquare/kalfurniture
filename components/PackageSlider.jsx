@@ -34,7 +34,7 @@ const PackageView = ({ pkg, isActive }) => {
           <h3 className="font-secondary text-[13px] tracking-[0.2em] uppercase text-secondary/50 font-bold mb-10">
             {pkg.collection}
           </h3>
-          <p className="font-secondary text-[15px] leading-relaxed text-secondary/70 max-w-[320px]">
+          <p className="font-secondary text-[15px] leading-relaxed text-secondary/70 max-w-[450px] whitespace-pre-wrap">
             {pkg.description}
           </p>
 
